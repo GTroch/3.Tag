@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Energieberatung für Baudenkmäler – Tag 3 – Quiz</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(160deg,#1a3a5c 0%,#2a6090 60%,#1a3a5c 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.container{background:#fff;border-radius:20px;max-width:680px;width:100%;box-shadow:0 12px 60px rgba(0,0,0,.35);overflow:hidden}
+.header{background:linear-gradient(135deg,#1a3a5c,#2a6090);padding:28px 32px 22px;color:#fff}
+.header h1{font-size:1.25rem;font-weight:800;line-height:1.3;margin-bottom:4px}
+.header .sub{font-size:.82rem;opacity:.8}
+.progress-bar-bg{background:rgba(255,255,255,.2);border-radius:4px;height:6px;margin-top:14px}
+.progress-bar{background:#fff;border-radius:4px;height:6px;transition:width .4s ease}
+.progress-label{font-size:.75rem;opacity:.75;margin-top:5px;text-align:right}
+.body{padding:28px 32px 32px}
+.category-tag{display:inline-block;background:#e8f0f8;color:#1a3a5c;font-size:.72rem;font-weight:700;border-radius:20px;padding:3px 11px;margin-bottom:12px;text-transform:uppercase;letter-spacing:.4px}
+.question{font-size:1rem;font-weight:700;color:#1a1a1a;line-height:1.5;margin-bottom:18px}
+.multi-hint{background:#fff8e0;border:1px solid #f4c033;border-radius:8px;padding:8px 14px;font-size:.8rem;color:#7a5500;margin-bottom:14px;display:none}
+.options{display:flex;flex-direction:column;gap:9px}
+.option{display:flex;align-items:flex-start;gap:12px;background:#f7f9fc;border:2px solid #d8e4f0;border-radius:10px;padding:13px 15px;cursor:pointer;transition:border-color .15s,background .15s;font-size:.88rem;color:#222;line-height:1.45;text-align:left;width:100%}
+.option:hover:not(:disabled){border-color:#2a6090;background:#eef3fa}
+.option.selected{border-color:#2a6090;background:#ddeaf8}
+.option.correct{border-color:#2a9d5c;background:#e6f7ee;color:#1a5c37}
+.option.wrong{border-color:#e05050;background:#fdeaea;color:#7a1a1a}
+.option:disabled{cursor:default}
+.option-letter{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:50%;background:#1a3a5c;color:#fff;font-size:.72rem;font-weight:700;flex-shrink:0}
+.option.correct .option-letter{background:#2a9d5c}
+.option.wrong .option-letter{background:#e05050}
+.option.selected .option-letter{background:#2a6090}
+.confirm-btn{display:none;margin-top:14px;background:#1a3a5c;color:#fff;border:none;border-radius:10px;padding:11px 22px;font-size:.92rem;font-weight:700;cursor:pointer;transition:opacity .2s}
+.confirm-btn:disabled{opacity:.45;cursor:default}
+.confirm-btn:not(:disabled):hover{opacity:.85}
+.feedback{display:none;margin-top:18px;border-radius:10px;padding:14px 16px;font-size:.85rem;line-height:1.55}
+.feedback.correct{background:#e6f7ee;border:1px solid #2a9d5c;color:#1a5c37}
+.feedback.wrong{background:#fdeaea;border:1px solid #e05050;color:#7a1a1a}
+.feedback-icon{font-weight:800;margin-bottom:4px;font-size:.95rem}
+.next-btn{display:none;margin-top:16px;background:linear-gradient(135deg,#1a3a5c,#2a6090);color:#fff;border:none;border-radius:10px;padding:13px 22px;font-size:.95rem;font-weight:700;cursor:pointer;width:100%;transition:opacity .2s,transform .15s}
+.next-btn:hover{opacity:.88;transform:translateY(-1px)}
+.results{padding:32px}
+.results h2{font-size:1.4rem;font-weight:800;color:#1a3a5c;margin-bottom:6px}
+.score-big{font-size:3rem;font-weight:900;color:#1a3a5c;line-height:1}
+.score-label{font-size:.9rem;color:#666;margin-bottom:22px}
+.cat-results{display:flex;flex-direction:column;gap:10px;margin-bottom:26px}
+.cat-row{background:#f5f8fc;border:1px solid #d0dff0;border-radius:10px;padding:12px 16px}
+.cat-name{font-size:.82rem;font-weight:700;color:#1a3a5c;margin-bottom:5px}
+.cat-bar-bg{background:#d8e8f5;border-radius:4px;height:8px}
+.cat-bar{background:linear-gradient(90deg,#1a3a5c,#2a6090);border-radius:4px;height:8px;transition:width .6s ease}
+.cat-pct{font-size:.75rem;color:#555;margin-top:3px;text-align:right}
+.restart-btn{background:linear-gradient(135deg,#1a3a5c,#2a6090);color:#fff;border:none;border-radius:12px;padding:15px 22px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;transition:opacity .2s}
+.restart-btn:hover{opacity:.88}
+.footer{text-align:center;padding:10px 32px 14px;font-size:.7rem;color:#bbb;border-top:1px solid #eee}
+</style>
+</head>
+<body>
+<div class="container" id="quiz-container">
+  <div class="header">
+    <h1>Energieberatung für Baudenkmäler – Tag 3</h1>
+    <div class="sub">Referentin: Dr.-Ing. Diana Wiedemann · Campus-EW GmbH</div>
+    <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar" style="width:1%"></div></div>
+    <div class="progress-label" id="progress-label">Frage 1 von 100</div>
+  </div>
+  <div class="body" id="quiz-body">
+    <div class="category-tag" id="cat-tag"></div>
+    <div class="question" id="question-text"></div>
+    <div class="multi-hint" id="multi-hint">☑ Mehrfachauswahl – wählen Sie alle zutreffenden Antworten und bestätigen Sie dann.</div>
+    <div class="options" id="options"></div>
+    <button class="confirm-btn" id="confirm-btn" onclick="confirmMulti()" disabled>Auswahl bestätigen</button>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">Weiter →</button>
+  </div>
+  <div class="footer">Tag 3 · Referentin: Dr.-Ing. Diana Wiedemann · Campus-EW GmbH, Aachen</div>
+</div>
+
+<script>
+const QUESTIONS = [
+  // ── KATEGORIE 1: Gesetze & Verordnungen (20) ──────────────────────────────
+  {cat:"Gesetze & Verordnungen",
+   q:"Welche Kriterien gelten laut MBO für die Gebäudeklasse 1?",
+   o:["Freistehend, Höhe ≤ 7 m, ≤ 2 Nutzungseinheiten bis 400 m²","Nicht freistehend, Höhe ≤ 7 m, ≤ 2 Nutzungseinheiten bis 400 m²","Freistehend oder angebaut, Höhe ≤ 7 m, bis zu 6 Nutzungseinheiten","Freistehend, Höhe ≤ 13 m, ≤ 2 Nutzungseinheiten bis 400 m²"],
+   a:0,
+   e:"Gebäudeklasse 1 umfasst freistehende Gebäude mit max. 7 m Höhe und nicht mehr als 2 Nutzungseinheiten mit insgesamt max. 400 m² sowie land­wirtschaftlich genutzte Gebäude."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Welche Gebäudeklasse beschreibt sonstige Gebäude mit einer Höhe von höchstens 7 m ohne Einschränkung der Nutzungseinheiten?",
+   o:["Gebäudeklasse 1","Gebäudeklasse 2","Gebäudeklasse 3","Gebäudeklasse 4"],
+   a:2,
+   e:"Gebäudeklasse 3 umfasst alle sonstigen Gebäude (also nicht freistehend und mit mehr als 2 Nutzungseinheiten oder mehr als 400 m²) bis zu einer Höhe von 7 m."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"In welchem Jahr trat die aktuelle MBO-Novelle in Kraft?",
+   o:["2020","2022","2024","2026"],
+   a:2,
+   e:"Die MBO-Novelle trat 2024 in Kraft und brachte wesentliche Änderungen u. a. für Windkraftanlagen, Mobilfunkausbau, Brandschutz, Abstandsflächen und Barrierefreiheit."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Was regelt §7c Nachbarrechtsgesetz (2014) zum Thema Wärmedämmung an Grundstücksgrenzen?",
+   o:["Verbot jeder Außenwanddämmung, die die Grundstücksgrenze überschreitet","Genehmigungsfreiheit aller Außenwanddämmungen an der Grenze","Rückbaupflicht für Überbauungen nach spätestens 30 Jahren","Duldungspflicht für Nachbarn bei Überbauungen bis zu 0,25 m durch nachträgliche Wärmedämmung"],
+   a:3,
+   e:"§7c sieht vor, dass Eigentümer Überbauungen durch nachträglich aufgebrachte Wärmedämmung bis zu 0,25 m dulden müssen, sofern die Beeinträchtigung nur geringfügig ist und die Maßnahme öffentlich-rechtlich zulässig ist."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Welche Brandschutzanforderung gilt laut MBO für notwendige Treppenräume?",
+   o:["Mindestens F30 für Treppenraumwände","Mindestens F45 für alle tragenden Bauteile","F60 oder F90 für den notwendigen Treppenraum","Mindestens F120 bei Gebäudeklasse 5"],
+   a:2,
+   e:"Notwendige Treppenräume müssen nach MBO eine Feuerwiderstandsdauer von F60 oder F90 aufweisen; notwendige Flure mindestens F30."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Was war eine wesentliche Neuerung der EnEV 2002 gegenüber der früheren Wärmeschutzverordnung?",
+   o:["Einführung des k-Werts als neues Berechnungsmaß","Einführung des U-Werts anstelle des bisherigen k-Werts","Abschaffung des sommerlichen Wärmeschutznachweises","Aufhebung der Energieausweispflicht für Bestandsgebäude"],
+   a:1,
+   e:"Mit der EnEV 2002 wurde der bisherige k-Wert durch den U-Wert ersetzt. Außerdem wurden verschärfte Anforderungen an den sommerlichen Wärmeschutz und der Energieausweis für Neubauten eingeführt."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Was legte die erste europäische Gebäuderichtlinie 2002/91/EG fest?",
+   o:["Verbot fossiler Energieträger in Neubauten bis 2010","Pflicht zur Solaranlage auf Dächern aller Neubauten","Regelmäßige Inspektionen von Heizkesseln und Klimaanlagen sowie Mindestanforderungen an neue Gebäude","Einführung des Passivhausstandards als europäische Mindestanforderung"],
+   a:2,
+   e:"Die EPBD 2002 enthielt Berechnungsmethoden, Mindestanforderungen für neue und größere renovierte Gebäude, Energieausweispflicht sowie Inspektionspflichten für Heizkessel (älter als 15 Jahre) und Klimaanlagen."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Ab wann müssen laut EU-Gebäuderichtlinie 2010/31/EU alle Neubauten als Fast-Null­energie­gebäude errichtet werden?",
+   o:["Ab 2018","Ab 2019 (für öffentliche Gebäude), ab 2021 für alle Neubauten","Ab 2025 für alle Neubauten ohne Ausnahme","Ab 2030 für Wohngebäude, ab 2025 für Nichtwohngebäude"],
+   a:1,
+   e:"Öffentliche Gebäude mussten ab 2019, alle anderen Neubauten ab 2021 als Fast-Nullenergie­gebäude (Niedrigstenergiegebäude) errichtet werden."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Welchen Primärenergiebedarf fordert das GEG beim 'Effizienzhaus Denkmal'?",
+   o:["100 % bezogen auf das Referenzgebäude Neubau","130 % bezogen auf das Referenzgebäude Neubau","145 % bezogen auf das Referenzgebäude Neubau","160 % bezogen auf das Referenzgebäude Neubau"],
+   a:3,
+   e:"Das Effizienzhaus Denkmal darf laut GEG einen Primärenergiebedarf von bis zu 160 % des Referenz­gebäudes Neubau aufweisen – ein erheblich gelockerte Anforderung gegenüber dem Standard-EH."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Was versteht das GEG unter dem Begriff 'Baudenkmal' (§3)?",
+   o:["Ein nach Landesrecht geschütztes Gebäude oder eine geschützte Gebäudemehrheit","Ein Gebäude, das vor 1900 errichtet wurde und unter Inventarschutz steht","Ein Gebäude der UNESCO-Welterbeliste in Deutschland","Ein Gebäude mit besonderen architektonischen Merkmalen aus der Zeit vor 1950"],
+   a:0,
+   e:"§3 GEG definiert 'Baudenkmal' als ein nach Landesrecht geschütztes Gebäude oder eine nach Landesrecht geschützte Gebäudemehrheit – also eine rein landesrechtliche Schutzqualität."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Was regelt §105 GEG für Baudenkmäler und besonders erhaltenswerte Bausubstanz?",
+   o:["Für Baudenkmäler gelten stets alle GEG-Anforderungen ohne jede Ausnahme","Von GEG-Anforderungen kann abgewichen werden, wenn Substanz oder Erscheinungsbild beeinträchtigt würde","Baudenkmäler sind vollständig und pauschal von der GEG-Anwendung ausgenommen","Für Baudenkmäler gelten erhöhte Anforderungen an den Primärenergiebedarf"],
+   a:1,
+   e:"§105 GEG erlaubt Abweichungen von den Anforderungen, wenn die Erfüllung die Substanz oder das Erscheinungsbild beeinträchtigen würde oder andere Maßnahmen zu unverhältnismäßig hohem Aufwand führen."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Welche Gebäude sind laut EPBD 2024 von den Effizienzanforderungen ausgenommen?",
+   o:["Alle Wohngebäude mit weniger als 3 Wohneinheiten","Freistehende Gebäude mit einer Gesamtnutzfläche unter 50 m²","Alle Gebäude mit Denkmalschutz ohne weitere Prüfung","Gebäude, die vor dem Jahr 1900 errichtet wurden"],
+   a:1,
+   e:"Freistehende Gebäude unter 50 m² Nutzfläche sind laut EPBD 2024 ausgenommen. Weitere Ausnahmen gelten für provisorische Gebäude, saisonal genutzte Wohngebäude und Gebäude für religiöse Zwecke."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Was ist das Ziel der EPBD 2024 für den Gebäudebestand?",
+   o:["Senkung des Primärenergieverbrauchs bei WG bis 2030 um 10 %","Vollständige Dekarbonisierung aller Gebäude bis 2040","Emissionsfreier Gebäudebestand bis 2050, Senkung des Primärenergie­verbrauchs bei WG bis 2030 um 16 %","Pflicht zur vollständigen Sanierung aller Gebäude bis 2050"],
+   a:2,
+   e:"Die EPBD 2024 verfolgt einen emissionsfreien Gebäudebestand bis 2050. Für Wohngebäude ist der Primärenergieverbrauch bis 2030 um 16 % und bis 2035 um 20–22 % zu senken."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Was schreibt §72 GEG zur Stilllegung von Heizkesseln vor?",
+   o:["Heizkessel, die älter als 30 Jahre sind, müssen stillgelegt werden","Heizkessel, die älter als 25 Jahre sind, sind auf Effizienz zu prüfen","Heizkessel ohne Brennwert­technik sind innerhalb von 10 Jahren zu ersetzen","Öl-Heizkessel dürfen seit 2024 nicht mehr betrieben werden"],
+   a:0,
+   e:"§72 GEG (früher §10 Abs. 1 EnEV) verpflichtet zur Stilllegung von Heizkesseln, die älter als 30 Jahre sind. Ausnahmen gelten für selbst genutzte Ein- und Zweifamilienhäuser."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Was besagt das Wirtschaftlichkeitsgebot nach §5 EnEG?",
+   o:["Alle Maßnahmen sind wirtschaftlich, wenn sie technisch ausführbar sind","Anforderungen müssen nach dem Stand der Technik erfüllbar und wirtschaftlich vertretbar sein","Wirtschaftlichkeit wird angenommen, wenn die KfW eine Förderung gewährt","Maßnahmen gelten als wirtschaftlich, wenn sie sich in 5 Jahren amortisieren"],
+   a:1,
+   e:"Das Wirtschaftlichkeitsgebot des §5 EnEG besagt, dass Anforderungen dem Stand der Technik entsprechen und wirtschaftlich vertretbar sein müssen – die eintretenden Einsparungen müssen die Kosten erwirtschaften können."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Was beinhaltete die EnEV 2002 als wesentlichen Schritt?",
+   o:["Einführung des Passivhausstandards für öffentliche Gebäude","Verbot von Festbrennstoffheizungen in Neubaugebieten","Zusammenführung von Wärmeschutzverordnung und Heizungsanlagen­verordnung","Pflicht zur Dachbegrünung für alle Neubauten"],
+   a:2,
+   e:"Die EnEV 2002 führte die bis dahin getrennten Verordnungen (Wärmeschutzverordnung WSchV und Heizungsanlagenverordnung) in einem Regelwerk zusammen und führte erstmals den Energieausweis für Neubauten ein."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Wann trat das Gebäudeenergiegesetz (GEG) erstmals in Kraft?",
+   o:["2017","2019","2020","2022"],
+   a:2,
+   e:"Das GEG trat 2020 in Kraft und führte EnEV sowie EEWärmeG zusammen. Eine Novellierung erfolgte 2024. Es führte u. a. die Ausweisung von CO₂-Emissionen im Energieausweis ein."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Was regelt MLAR im Brandschutz?",
+   o:["Mindestabstände für Lüftungsöffnungen in Kellerräumen","Brandschutztechnische Anforderungen an Leitungsanlagen (z. B. Kabel- und Leitungsschotte)","Die maximale Länge von Rettungswegen in Bestandsgebäuden","Anforderungen an Lüftungsquerschnitte in notwendigen Treppenräumen"],
+   a:1,
+   e:"MLAR (Musterrichtlinie über brandschutztechnische Anforderungen an Leitungsanlagen) regelt, wie elektrische, sanitäre und heizungstechnische Leitungen Brandabschnitte sicher durchqueren – z. B. mit Manschetten, Brandschutz­mörtel und -schaum."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Was gilt für Dachdämmungen im Saarland bezüglich der Abstandsflächenregelungen?",
+   o:["Im Saarland sind alle Dachdämmungen grundsätzlich verboten","Im Saarland gelten identische Regeln wie in allen anderen Bundesländern","Im Saarland ist die Dachdämmung eine Ausnahme von der Verfahrensfreiheit","Im Saarland gelten für Dachdämmungen generell keine Abstandsflächenregeln"],
+   a:2,
+   e:"Während Dämmmaßnahmen nach §6 MBO normalerweise verfahrensfrei sind, gilt im Saarland die Dachdämmung als Ausnahme – sie ist dort nicht verfahrensfrei."},
+
+  {cat:"Gesetze & Verordnungen",
+   q:"Was gilt für denkmalgeschützte Gebäude bezüglich der Energieausweispflicht (§79/80 GEG)?",
+   o:["Sie benötigen einen speziellen Denkmal-Energieausweis","Die Pflicht gilt nur bei Verkauf, nicht bei Vermietung","Es gilt die normale Energieausweispflicht wie für alle Gebäude","Sie sind bei Verkauf und Vermietung von der Energieausweispflicht ausgenommen"],
+   a:3,
+   e:"§79/80 GEG nimmt denkmalgeschützte Gebäude ausdrücklich von der Energieausweispflicht aus – sowohl beim Verkauf als auch bei der Vermietung."},
+
+  // ── KATEGORIE 2: Denkmalschutzrecht (10) ──────────────────────────────────
+  {cat:"Denkmalschutzrecht",
+   q:"Was ist Gegenstand der Granadakonvention von 1985?",
+   o:["Schutz des architektonischen Erbes Europas","Finanzierungsregelungen für Restaurierungsmaßnahmen in der EU","Vereinheitlichung der Denkmalschutzgesetze der EU-Mitgliedstaaten","Schutz des immateriellen Kulturerbes und traditioneller Handwerkstechniken"],
+   a:0,
+   e:"Die Granadakonvention ist das Übereinkommen des Europarats zum Schutz des architektonischen Erbes (1985). Sie verpflichtet Mitgliedstaaten zur Erfassung, zum Schutz und zur Erhaltung von Baudenkmälern."},
+
+  {cat:"Denkmalschutzrecht",
+   q:"Was sieht die Granadakonvention als gemeinsame Leitlinie vor?",
+   o:["Pflicht zur energetischen Sanierung aller Baudenkmale bis 2050","Erfassung schutzwürdiger Baudenkmäler, Baugruppen und Stätten in Inventaren","Steuerfreiheit für Eigentümer von Baudenkmalen in allen Mitgliedstaaten","Verbot von Umnutzungen eingetragener Baudenkmale"],
+   a:1,
+   e:"Die Granadakonvention verpflichtet u. a. zur systematischen Inventarisierung schutzwürdiger Baudenkmäler sowie dazu, Vorschriften zum Schutz und zur Erhaltung einzuführen und das Versetzen von Baudenkmalen zu verhindern."},
+
+  {cat:"Denkmalschutzrecht",
+   q:"Was regelt die DIN EN 16883 (2017)?",
+   o:["Technische Anforderungen an Energieausweise für historische Gebäude","Prüfverfahren für die statische Belastbarkeit alter Holztragwerke","Leitlinien für die Verbesserung der energiebezogenen Leistung historischer Gebäude unter Berücksichtigung ihres kulturellen Werts","Werkstoffkennwerte für mittelalterliche Mauersteine nach DIN EN ISO"],
+   a:2,
+   e:"DIN EN 16883:2017 bietet einen normativen Arbeitsablauf für die Auswahl von Energieeffizienzmaßnahmen bei historischen Gebäuden – mit Untersuchung, Analyse und Dokumentation unter Berücksichtigung der kulturellen Bedeutung."},
+
+  {cat:"Denkmalschutzrecht",
+   q:"Für welche Gebäude gilt die DIN EN 16883?",
+   o:["Ausschließlich für staatlich eingetragene Baudenkmale","Nur für Gebäude der UNESCO-Welterbeliste","Nur für Gebäude, die vor dem Jahr 1900 errichtet wurden","Für Baudenkmale und historische Gebäude allgemein"],
+   a:3,
+   e:"Die DIN EN 16883 gilt ausdrücklich nicht nur für Baudenkmale, sondern auch für historische Gebäude allgemein – also für alle Gebäude mit kulturgeschichtlicher Bedeutung."},
+
+  {cat:"Denkmalschutzrecht",
+   q:"Was ist die WTA?",
+   o:["Wissenschaftlich-technische Arbeitsgemeinschaft für Bauwerkserhaltung und Denkmalpflege","Welterbetechnische Ausschreibungsagentur der Vereinten Nationen","Wirtschaftliche Trägerschaft der Architektenverbände Europas","Wärmetechnisches Analyse-Institut für Altbauten und Baudenkmale"],
+   a:0,
+   e:"WTA steht für Wissenschaftlich-technische Arbeitsgemeinschaft für Bauwerkserhaltung und Denkmalpflege. Sie gibt über 1.600 VDI-Richtlinien heraus und betreibt eine eigene Liste für Energieberater Denkmal."},
+
+  {cat:"Denkmalschutzrecht",
+   q:"Seit wann werden Denkmäler in der Denkmaltopographie systematisch erfasst?",
+   o:["Seit 1960","Seit 1975","Seit 1981","Seit 1995"],
+   a:2,
+   e:"Seit 1981 werden alle Denkmäler in Deutschland systematisch in der Denkmaltopographie aufgenommen. Das Werk wird ca. 800 Bände umfassen und enthält ausführliche Beschreibungen und historische Grundlagen."},
+
+  {cat:"Denkmalschutzrecht",
+   q:"Was untersucht die Norm CEN TC 346?",
+   o:["Statische Eigenschaften historischer Tragwerke und Deckenkonstruktionen","Feuchte- und temperaturbezogene Messverfahren sowie Prüfverfahren zum Erhalt kulturellen Erbes","Energieeffizienzklassen und Energieausweise für Baudenkmale","Feuerwiderstand historischer Holzkonstruktionen nach EN-Normen"],
+   a:1,
+   e:"CEN TC 346 umfasst Normen zur Erhaltung des kulturellen Erbes, z. B. Messverfahren für Luft- und Oberflächentemperaturen, Wasserabsorption durch Kapillarität und Bestimmung des Wasserdampfleitkoeffizienten (δp)."},
+
+  {cat:"Denkmalschutzrecht",
+   q:"Welche Kriterien bilden die Grundlage für eine neue historische Gebäudetypologie?",
+   o:["Nutzungsart, Eigentümerstatus, Baualter und Bundesland","Baualter, Stilmerkmale, baukonstruktive und energetische Merkmale","Heizungsart, Kellernutzung, Dachform und Fassadengestaltung","Gebäudehöhe, Wohneinheiten, Grundstücksgröße und Renovierungsstand"],
+   a:1,
+   e:"Eine neue historische Gebäudetypologie nutzt vier Merkmale: Baualter, Stilmerkmale, baukonstruktive Merkmale (Mauerwerk, Fachwerk etc.) und energetische Merkmale (Gebäudegröße und -form)."},
+
+  {cat:"Denkmalschutzrecht",
+   q:"Was fordert die Granadakonvention zum Schutz der Baudenkmale?",
+   o:["Staatliche Übernahme aller Baudenkmale ohne Eigentümerwechsel","Pflicht zur öffentlichen Zugänglichkeit aller geschützten Gebäude","Verhinderung des Versetzens von Baudenkmalen","Vollständigen Abrissschutz für alle registrierten Baudenkmale"],
+   a:2,
+   e:"Die Granadakonvention verpflichtet die Mitglieder u. a. dazu, zu verhindern, dass Baudenkmale versetzt werden. Sie soll die Bewahrung des baugeschichtlichen Erbes als Teil des europäischen Kulturerbes sichern."},
+
+  {cat:"Denkmalschutzrecht",
+   q:"Welchen Umfang wird die Denkmaltopographie letztendlich haben?",
+   o:["Ca. 100 Bände mit regionalen Inventaren","Ca. 400 Bände mit Kurzinventaren","Ca. 600 Bände mit Gebäudebeschreibungen","Ca. 800 Bände mit ausführlichen Beschreibungen und historischen Grundlagen"],
+   a:3,
+   e:"Die Denkmaltopographie wird ca. 800 Bände umfassen. Sie erscheint für alle Bundesländer und enthält ausführliche Beschreibungen sowie historische Grundlagen zu allen erfassten Denkmälern."},
+
+  // ── KATEGORIE 3: Bauphysik – Wärmeschutz (25) ─────────────────────────────
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Was ist die Einheit des U-Werts (Wärmedurchgangskoeffizient)?",
+   o:["kWh/(m²·a)","J/(kg·K)","W/(m²K)","m²·K/W"],
+   a:2,
+   e:"Der U-Wert gibt an, wie viel Wärmeenergie in Watt durch 1 m² eines Bauteils bei 1 K Temperatur­differenz fließt. Die Einheit lautet W/(m²K). Je niedriger der U-Wert, desto besser die Dämmwirkung."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Wie ist der Zusammenhang zwischen U-Wert und Wärmedämmwirkung?",
+   o:["Je höher der U-Wert, desto besser die Wärmedämmwirkung","Je niedriger der U-Wert, desto höher die Transmissionswärmeverluste","U-Wert und Wärmedämmung stehen in keinem direkten Zusammenhang","Je höher der U-Wert, desto schlechter die Wärmedämmwirkung"],
+   a:3,
+   e:"Ein hoher U-Wert bedeutet hohen Wärmestrom und damit schlechte Dämmwirkung. Je niedriger der U-Wert, desto weniger Wärme geht durch das Bauteil verloren."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Wie berechnet sich der Wärmedurchlasswiderstand Ri eines homogenen Bauteils?",
+   o:["Ri = d / λ [m²·K/W]","Ri = λ / d [W/(m²·K)]","Ri = U · d [m³·K/W]","Ri = 1 / (λ · A) [K/W]"],
+   a:0,
+   e:"Der Wärmedurchlasswiderstand Ri ergibt sich aus der Bauteildicke d (in m) geteilt durch die Wärmeleitfähigkeit λ. Die Einheit ist m²·K/W. Je dicker und je weniger leitfähig, desto größer Ri."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Wie wird der U-Wert mathematisch berechnet?",
+   o:["U = λ · d","U = 1 / (RSi + Σ Ri + RSe)","U = RSi + Σ Ri + RSe","U = d / (λ · A)"],
+   a:1,
+   e:"Der U-Wert ist der Kehrwert des gesamten Wärmedurchgangswiderstands RT = RSi + Σ Ri + RSe, wobei RSi und RSe die Wärmeübergangswiderstände innen und außen sind."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Was bedeutet ein höherer Wärmedurchgangswiderstand RT für ein Bauteil?",
+   o:["Höhere Transmissionswärmeverluste durch das Bauteil","Schlechtere Wärmedämmeigenschaft des Materials","Bessere Wärmedämmwirkung des Bauteils","Höherer Wärmedurchgangskoeffizient U des Bauteils"],
+   a:2,
+   e:"Je größer der Wärmedurchgangswiderstand RT, desto besser dämmt das Bauteil. Da U = 1/RT, führt ein hoher RT zu einem niedrigen U-Wert."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Welche Faktoren beeinflussen die Wärmeleitfähigkeit λ eines Baustoffs?",
+   o:["Farbe und Helligkeit der Materialoberfläche","Baujahr und Herstellungsland des Baustoffs","Feuchtegehalt, Rohdichte und Porosität des Materials","Wandstärke und Einbaulage des Materials"],
+   a:2,
+   e:"Die Wärmeleitfähigkeit λ wird vom Feuchtegehalt, der Rohdichte und der Porosität beeinflusst: Je poröser (mehr Luft), desto geringer λ; je höher die Rohdichte, desto höher λ."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Wie lautet die Formel für den Transmissionswärmeverlust QT?",
+   o:["QT = U-Wert · A · Klimafaktor [kWh/a]","QT = R-Wert · A · Temperaturunterschied","QT = λ · d · A · Temperaturdifferenz","QT = HT · V · Luftwechselrate"],
+   a:0,
+   e:"Der Transmissionswärmeverlust QT berechnet sich als Produkt aus U-Wert, Bauteilfläche A und Klimafaktor. Die Einheit ist kWh/a."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Wovon hängt die Wärmespeicherfähigkeit eines Materials ab?",
+   o:["Ausschließlich von der Rohdichte des Materials","Von Wärmeleitfähigkeit λ, Rohdichte ρ und spezifischer Wärmekapazität cp","Nur von der Porosität und dem Feuchtegehalt","Vom U-Wert und der Bauteildicke"],
+   a:1,
+   e:"Die Wärmespeicherfähigkeit hängt von der Temperaturleitfähigkeit a = λ / (ρ · cp) ab. Sie beeinflusst Phasenverschiebung, sommerlichen Wärmeschutz und die Länge der Auskühlzeit."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Was beschreibt die Phasenverschiebung bei massiven Bauteilen?",
+   o:["Den Aggregatzustandswechsel des Wassers in den Bauteilporen bei Frost","Die chemische Reaktion von Kalk mit Luftfeuchte an Oberflächen","Die zeitliche Verzögerung der Wärmewelle beim Durchgang durch massive Bauteile","Die jahreszeitliche Verschiebung der Isothermen im Bauteilquerschnitt"],
+   a:2,
+   e:"Die Phasenverschiebung beschreibt, wie lange es dauert, bis eine Temperaturschwankung von der Außen- zur Innenfläche eines Bauteils vordringt. Bei massiven Bauteilen kann dies mehrere Stunden betragen – wichtig für den sommerlichen Wärmeschutz."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Wann wurde die erste Wärmeschutzverordnung in Deutschland eingeführt?",
+   o:["1952","1965","1970","1977"],
+   a:3,
+   e:"Die erste Wärmeschutzverordnung (WSchVO) trat 1977 in Kraft – als Folge der Ölkrise der 1970er-Jahre und auf Grundlage des Energieeinsparungsgesetzes (EnEG) von 1976."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Welche drei Arten des Wärmetransports gibt es?",
+   o:["Wärmeleitung, Wärmestrahlung und Konvektion","Diffusion, Konvektion und Osmose","Absorption, Transmission und Reflexion","Konduktion, Induktion und Evaporation"],
+   a:0,
+   e:"Wärme wird durch Wärmeleitung (in Feststoffen), Strahlung (elektromagnetisch) und Konvektion (strömende Fluide) übertragen. In Bauteilen mit Luftschichten wirken alle drei Mechanismen zusammen."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Welche optimale Dicke haben Luftschichten in Bauteilen für den Wärmeschutz?",
+   o:["Ca. 1 bis 2 cm","Ca. 4 cm","Ca. 8 bis 10 cm","Ca. 15 cm"],
+   a:1,
+   e:"Der beste Wärmeschutz einer Luftschicht wird bei ca. 4 cm Dicke erreicht. Bei größeren Dicken verbessert sich der R-Wert nicht mehr wesentlich; der mittlere R-Wert einer ruhenden Luftschicht beträgt ca. 0,17 m²K/W."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Was beschreibt die Luftdichtheit eines Gebäudes?",
+   o:["Den gemessenen Wärmestrom bei 50 Pa Druckdifferenz","Den Luftwechsel durch bewusst angelegte Lüftungsöffnungen","Den Anteil undichter Stellen in Prozent der Hüllfläche","Die Eigenschaft der Gebäudehülle, unkontrollierten Luftdurchtritt zu minimieren"],
+   a:3,
+   e:"Luftdichtheit ist Voraussetzung moderner Energiekonzepte. Undichte Gebäude führen zu unkontrollierten Lüftungswärmeverlusten, Bauschäden durch Feuchtekondensat und Zugerscheinungen."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Was sind geometrische Wärmebrücken?",
+   o:["Bereiche mit Versprüngen und Ecken, wo mehr Außen- als Innenfläche vorhanden ist","Bauteilbereiche mit besonders hoher Wärmeleitfähigkeit","Einbauten wie Heizkörpernischen an Außenwänden","Anschlüsse von metallischen Befestigungselementen durch die Dämmung"],
+   a:0,
+   e:"Geometrische Wärmebrücken entstehen an Ecken und Versprüngen, wo die Außenfläche größer ist als die Innenfläche. Die Wärme fließt über einen größeren Bereich ab als sie aufgenommen wird."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Welcher pauschale Zuschlag ist beim vereinfachten Wärmebrückennachweis zu verwenden?",
+   o:["0,05 W/(m²K) für Gebäude mit Innendämmung","0,10 W/(m²K) bzw. 0,15 W/(m²K) je nach Nachweis","0,20 W/(m²K) für alle Bestandsgebäude ohne Sanierung","0,30 W/(m²K) bei Balkon- und Dachanschlüssen"],
+   a:1,
+   e:"Beim pauschalen Wärmebrückennachweis sind 0,10 W/(m²K) (Gleichwertigkeitsnachweis) oder 0,15 W/(m²K) zuzuschlagen. Beim detaillierten Nachweis gilt ein Zuschlag von 0,05 W/(m²K)."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Welche Folge können Wärmebrücken für die Bausubstanz haben?",
+   o:["Sie erhöhen die Oberflächentemperatur und verhindern Tauwasser","Wärmebrücken haben keinen Einfluss auf Schimmelbildung","Sie können zu niedrigen Oberflächentemperaturen und damit zu Tauwasser und Schimmelbildung führen","Sie verstärken die Luftdichtheit der Außenhülle"],
+   a:2,
+   e:"Wärmebrücken führen zu lokal reduzierter Oberflächentemperatur. Unterschreitet diese die Taupunkttemperatur der Raumluft, fällt Tauwasser aus – Schimmelpilzbildung ist die häufige Folge."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Was ist der Gleichwertigkeitsnachweis beim Wärmebrückennachweis?",
+   o:["Nachweis, dass der U-Wert aller Bauteile den GEG-Anforderungen entspricht","Nachweis, dass der Primärenergiebedarf dem Referenzgebäude entspricht","Nachweis, dass Schimmelbildung durch ausreichend hohe Oberflächentemperatur ausgeschlossen ist","Nachweis mit einem reduzierten Zuschlag von 0,05 W/(m²K) statt der pauschalen Werte"],
+   a:3,
+   e:"Beim Gleichwertigkeitsnachweis wird durch detaillierte Berechnung nachgewiesen, dass die Wärmebrückenwirkung nicht schlechter als bei den Ausführungsbeispielen nach DIN 4108 Beiblatt 2 ist. Als Ergebnis gilt ein Zuschlag von 0,05 W/(m²K)."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Was ergibt sich aus dem Mittelwert von Raumlufttemperatur und Strahlungstemperatur der Bauteile?",
+   o:["Die thermische Behaglichkeit in einem Raum","Die Kondensationsgefahr an Außenwänden","Der Heizenergiebedarf des Gebäudes","Die Luftwechselrate für hygienisches Lüften"],
+   a:0,
+   e:"Thermische Behaglichkeit wird durch die Mittelwertbildung aus Raumlufttemperatur und Strahlungstemperatur der umgebenden Bauteile bestimmt. Kalte Wandoberflächen können durch höhere Raumlufttemperatur kompensiert werden (max. 3–4 °C Differenz empfohlen)."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Wie viel Prozent mehr Heizenergie verbraucht ein Gebäude je Grad erhöhter Raumlufttemperatur?",
+   o:["Ca. 3 %","Ca. 6 %","Ca. 10 %","Ca. 15 %"],
+   a:1,
+   e:"Jedes Grad Celsius erhöhte Raumlufttemperatur führt zu ca. 6 % zusätzlichem Heizenergieverbrauch. Kalte Wandoberflächen durch schlechten Wärmeschutz erhöhen also indirekt den Energieverbrauch erheblich."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Wann wurde das Energieeinsparungsgesetz (EnEG) als Ermächtigungsgesetz eingeführt?",
+   o:["1968","1972","1976","1984"],
+   a:2,
+   e:"Das EnEG (Energieeinsparungsgesetz) trat 1976 als Folge der Ölkrise der 1970er-Jahre in Kraft. Es bildete die Grundlage für die Wärmeschutzverordnung (1977), Heizungsanlagenverordnung und weitere Verordnungen."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Was beschreibt das A/V-Verhältnis bei Gebäuden?",
+   o:["Das Verhältnis von Aufenthaltsräumen zu Verkehrsflächen","Das Verhältnis der Fensterfläche zur Gebäudehüllfläche","Das Verhältnis der Außenwandfläche zur Dachfläche","Das Verhältnis der wärmeübertragenden Hüllfläche zum beheizten Gebäudevolumen"],
+   a:3,
+   e:"Das A/V-Verhältnis (Hüllfläche zu Volumen) hat große Auswirkungen auf den Energieverbrauch: Ein kleines A/V-Verhältnis (kompaktes Gebäude) bedeutet weniger Verlustfläche pro beheiztem Volumen."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Welche Teile der DIN 4108 behandeln Feucht- und Luftdichtheit?",
+   o:["DIN 4108-3 (Feuchteschutz) und DIN 4108-7 (Luftdichtheit)","DIN 4108-2 (Mindestanforderungen) und DIN 4108-4 (Bemessungswerte)","DIN 4108-10 (Wärmedämmstoffe) und DIN 4108-6 (Jahresheizwärmebedarf)","DIN 4108 BB1 (Stichwortverzeichnis) und DIN 4108 BB2 (Wärmebrücken)"],
+   a:0,
+   e:"DIN 4108-3 regelt den klimabedingten Feuchteschutz (Tauwasser, Schlagregen), DIN 4108-7 die Luftdichtheit von Gebäuden. DIN 4108-8 behandelt ergänzend die Vermeidung von Schimmelpilzwachstum."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Was ist der spezifische Transmissionswärmeverlust HT?",
+   o:["Die gesamte jährliche Transmissionswärmemenge des Gebäudes in kWh","Der Wärmestrom je Kelvin Temperaturdifferenz durch die gesamte Hüllfläche","Die Differenz zwischen Heizwärmebedarf und solaren Gewinnen","Die Wärmemenge je Quadratmeter Wohnfläche bei Normaußentemperatur"],
+   a:1,
+   e:"HT ist der Wärmestrom, der bei 1 K Temperaturdifferenz durch die gesamte Hüllfläche fließt. Er bestimmt die energetische Qualität der Gebäudehülle und ist Bestandteil des GEG-Nachweises."},
+
+  {cat:"Bauphysik – Wärmeschutz",
+   q:"Was beschreibt DIN 4108-7?",
+   o:["Mindestwärmeschutz für Aufenthaltsräume mit Innentemperaturen über 19 °C","Wärme- und feuchteschutztechnische Bemessungswerte für Baustoffe","Luftdichtheit von Gebäuden mit Anforderungen, Planungs- und Ausführungsempfehlungen","Anwendungsbezogene Anforderungen an werkmäßig hergestellte Wärmedämmstoffe"],
+   a:2,
+   e:"DIN 4108-7 regelt die Anforderungen an die Luftdichtheit der Gebäudehülle und gibt Planungs- sowie Ausführungsempfehlungen und -beispiele. Luftdichtheit ist wichtig für die Realisierung moderner Energiekonzepte."},
+
+  // ── KATEGORIE 4: Feuchteschutz (15) ──────────────────────────────────────
+  {cat:"Feuchteschutz",
+   q:"Welche Feuchtearten können Bauteile belasten?",
+   o:["Nur Regenfeuchte und aufsteigende Feuchte sind für Baudenkmale relevant","Regenfeuchte, Tauwasser von innen, aufsteigende kapillare Feuchte und Anfangs-/Herstellungsfeuchte","Nur Tauwasser und Herstellungsfeuchte sind baukonstruktiv von Bedeutung","Regenfeuchte, Tauwasser und Herstellungsfeuchte, jedoch kein Grundwasser"],
+   a:1,
+   e:"Bauteile können durch vier Feuchtearten belastet werden: Regenfeuchte von außen, Tauwasser von innen, aufsteigende kapillare Feuchte von unten sowie Anfangs- bzw. Herstellungsfeuchte."},
+
+  {cat:"Feuchteschutz",
+   q:"Was ist Sommerkondensation?",
+   o:["Kondensation an kühlen Bauteilen, wenn warme feuchte Außenluft einströmt","Tauwasserausfall durch übermäßige Nutzungsfeuchtigkeit in der warmen Jahreszeit","Kondensation durch Temperaturgefälle in Dämmschichten bei sommerlicher Hitze","Feuchtigkeitsansammlung an Fensterscheiben durch hohe Innenlufttemperatur im Sommer"],
+   a:0,
+   e:"Sommerkondensation tritt besonders in Kellern auf: Warme, feuchte Außenluft dringt ein und kondensiert an den kühlen, massiven Bauteilen. Sie entsteht typischerweise in un- oder temporär beheizten Gebäuden."},
+
+  {cat:"Feuchteschutz",
+   q:"Wann sollte man lüften, um Sommerkondensation zu vermeiden?",
+   o:["Immer abends, wenn die Außentemperatur unter 20 °C sinkt","Wenn die absolute Luftfeuchtigkeit außen geringer ist als im Inneren","Ausschließlich zwischen 6 und 8 Uhr morgens","Sobald die relative Innenluftfeuchte 60 % überschreitet"],
+   a:1,
+   e:"Zur Vermeidung von Sommerkondensation sollte nur gelüftet werden, wenn die absolute Luftfeuchtigkeit außen geringer ist als innen. Nur dann wird tatsächlich Feuchte nach außen transportiert."},
+
+  {cat:"Feuchteschutz",
+   q:"Was ist die Taupunkttemperatur?",
+   o:["Die Temperatur, bei der Wasser zu Eis gefriert (0 °C)","Die optimale Innenraumtemperatur von 20 °C nach DIN 4108","Die Temperatur, bei der feuchte Luft abgekühlt wird und Feuchtigkeit in flüssiger Form ausscheidet","Die Temperatur, ab der Feuchtigkeit vollständig als Dampf vorliegt"],
+   a:2,
+   e:"Die Taupunkttemperatur ist der Grenzbereich, bei dem Wasser aus der Luft in flüssiger Form austritt. Warme Luft kann mehr Feuchtigkeit aufnehmen als kalte – wird sie abgekühlt, fällt überschüssige Feuchte als Kondensat aus."},
+
+  {cat:"Feuchteschutz",
+   q:"Welche Randbedingungen gelten beim Glaserverfahren für die winterliche Tauperiode?",
+   o:["-5 °C / 90 % rel. Feuchte außen, +20 °C / 50 % rel. Feuchte innen","-15 °C / 70 % rel. Feuchte außen, +22 °C / 60 % rel. Feuchte innen","0 °C / 100 % rel. Feuchte außen, +18 °C / 40 % rel. Feuchte innen","-10 °C / 80 % rel. Feuchte außen, +20 °C / 50 % rel. Feuchte innen"],
+   a:3,
+   e:"Beim Glaserverfahren werden als Standardrandbedingungen für die Tauperiode -10 °C / 80 % rel. Feuchte außen und +20 °C / 50 % rel. Feuchte innen angesetzt. Die Anreicherungszeit beträgt 60 Tage, die Austrocknungszeit 90 Tage."},
+
+  {cat:"Feuchteschutz",
+   q:"Was ist der sd-Wert?",
+   o:["Die wasserdampfdiffusionsäquivalente Luftschichtdicke in Metern","Der spezifische Durchfeuchtungsgrad des Mauerwerks in %","Die Sättigungsdruckdifferenz über einem Bauteil in Pa","Die Schlagregendichte in Liter pro Stunde und Quadratmeter"],
+   a:0,
+   e:"Der sd-Wert (wasserdampfdiffusionsäquivalente Luftschichtdicke) in Metern ist ein Maß für den Widerstand eines Materials gegen Wasserdampfdiffusion. Er ergibt sich aus μ-Wert × Dicke (in m)."},
+
+  {cat:"Feuchteschutz",
+   q:"Welchen sd-Wert hat eine Polystyrol-Platte mit 4 cm Dicke bei einem μ-Wert von ca. 50?",
+   o:["0,5 m","2 m","5 m","20 m"],
+   a:1,
+   e:"sd = μ · d = 50 × 0,04 m = 2 m. Zum Vergleich: Mineralwolle (μ ≈ 1) ergibt sd ≈ 0,04 m, PE-Dichtfolie (μ ≈ 100.000) ergibt sd ≈ 100.000 m."},
+
+  {cat:"Feuchteschutz",
+   q:"Welche Schlagregenbeanspruchungsgruppe gilt für Gebiete mit über 800 mm Jahresniederschlag und starkem Wind?",
+   o:["Gruppe I – geringe Schlagregenbeanspruchung","Gruppe II – mittlere Schlagregenbeanspruchung","Gruppe III – starke Schlagregenbeanspruchung","Gruppe IV – sehr starke Schlagregenbeanspruchung"],
+   a:2,
+   e:"DIN 4108-3 unterscheidet drei Beanspruchungsgruppen: I (< 600 mm/a, windgeschützt), II (600–800 mm/a oder exponierte Lagen) und III (> 800 mm/a mit starkem Wind sowie Hochhäuser in exponierten Lagen)."},
+
+  {cat:"Feuchteschutz",
+   q:"Welche Maßnahmen kommen bei fehlender oder schlechter Horizontalsperre in Betracht?",
+   o:["Vollständiger Abriss und Neubau des Fundamentbereichs","Einbau einer neuen Dampfsperre zwischen Fundament und Mauerwerk","Auftragen von Zementputz auf allen feuchten Wandflächen","Säge- und Injektionsverfahren, Opferputze sowie Freilegen des Mauerwerks"],
+   a:3,
+   e:"Bei fehlender Horizontalsperre kommen Säge- und Injektionsverfahren, Opferputze, Freilegen des Mauerwerks oder eine Änderung der Raumnutzung (ohne oder mit nur geringer Beheizung) in Betracht."},
+
+  {cat:"Feuchteschutz",
+   q:"Was gilt für die Steighöhen kapillar aufsteigender Grundfeuchtigkeit?",
+   o:["Die Steighöhen sind bei im Wasser stehenden Mauern sehr hoch (bis zu 3 m)","Die Steighöhen sind bei im Wasser stehenden Mauern nur gering; Mörtelfugen können als Feuchtesperre wirken","Aufsteigende Feuchte steigt immer bis zur halben Gebäudehöhe auf","Kleinformatige Steine bieten schlechtere Feuchtebarrieren als großformatige Steine"],
+   a:1,
+   e:"Langzeit-Untersuchungen des IPB zeigen: Steighöhen sind bei im Wasser stehenden Mauern nur gering. Mörtelfugen können je nach Material als Feuchtesperre wirken. Kleinformatige Steine bieten durch mehr Fugen einen besseren Wetterschutz."},
+
+  {cat:"Feuchteschutz",
+   q:"Durch welche Mechanismen wird Wasser im Bauteil transportiert?",
+   o:["Nur durch Kapillarkräfte ohne Dampfdiffusion","Durch Kapillarkräfte und durch Dampfdiffusion","Durch Osmose und elektrostatische Kräfte","Durch Konvektion und Wärmeleitung"],
+   a:1,
+   e:"Feuchtetransport im Bauteil erfolgt durch Kapillarkräfte (flüssig) und durch Dampfdiffusion (gasförmig). Form, Art und Größe der Poren beeinflussen dabei die Wassereinlagerung und den Transport."},
+
+  {cat:"Feuchteschutz",
+   q:"Was beschreibt das Glaserverfahren?",
+   o:["Ein Messverfahren für Feuchtigkeit in Mauerwerk mit Elektroden","Eine Berechnungsmethode für die Schlagregenbeanspruchung an Fassaden","Ein grafisch-tabellarisches Annäherungsverfahren zur Bestimmung von Tauwasseranfall in Bauteilen","Eine Simulationsmethode für den instationären Wärme- und Feuchtehaushalt"],
+   a:2,
+   e:"Das Glaserverfahren (nach Helmut Glaser) ist ein tabellarisch-grafisches Annäherungsverfahren, um festzustellen, ob und wo Tauwasser im Bauteil anfällt. Es eignet sich vor allem bei überwiegender Dampfdiffusion."},
+
+  {cat:"Feuchteschutz",
+   q:"Wann ist das Glaserverfahren weniger geeignet?",
+   o:["Bei gut gedämmten Bauteilen mit sehr niedrigem U-Wert","Bei Bauteilen mit einem sehr hohen sd-Wert der Dampfbremse","Wenn der Feuchtetransport überwiegend über Kapillartransport stattfindet","Bei einfachen homogenen Wandaufbauten ohne Luftschichten"],
+   a:2,
+   e:"Das Glaserverfahren liefert nur dann verwertbare Ergebnisse, wenn der Feuchtetransport überwiegend durch Dampfdiffusion erfolgt. Je mehr Feuchtigkeit kapillar transportiert wird, desto ungeeigneter ist das Verfahren."},
+
+  {cat:"Feuchteschutz",
+   q:"Welche Wände sind besonders durch Schlagregen gefährdet?",
+   o:["Nach Süden orientierte Wände durch direkte Sonneneinstrahlung","In Hauptwetterrichtung nach Westen orientierte Wände","Nach Norden orientierte Wände durch dauernde Beschattung","Nach Osten orientierte Wände durch Morgenkondensation"],
+   a:1,
+   e:"Wände in Hauptwetterrichtung nach Westen sind besonders durch Schlagregen gefährdet. Saugfähige und poröse Außenwandmaterialien – typisch für Baudenkmale – sind besonders zu schützen."},
+
+  // ── KATEGORIE 5: Analyse & Messverfahren (15) ─────────────────────────────
+  {cat:"Analyse & Messverfahren",
+   q:"Wie funktioniert ein Wärmeflusssensor?",
+   o:["Er ermittelt Oberflächentemperaturen über Infrarotstrahlung","Er misst elektrische Widerstände über zwei Elektroden","Er misst Wärmeströme durch flache Platten, wobei die Temperaturdifferenz in elektrische Spannung umgewandelt wird","Er vergleicht Innen- und Außentemperaturen über einen Datenlogger"],
+   a:2,
+   e:"Wärmeflusssensoren messen Wärmeströme senkrecht zur Sensorfläche. Die Temperaturdifferenz wird in elektrische Spannung umgewandelt. Konvektion, Wärmeleitung und Strahlung werden erfasst."},
+
+  {cat:"Analyse & Messverfahren",
+   q:"Wie lange muss eine U-Wert-Messung mit Wärmeflusssensor mindestens dauern?",
+   o:["12 Stunden","1 Tag","2 Tage","Mindestens 3 Tage"],
+   a:3,
+   e:"Die U-Wert-Messung vor Ort muss mindestens 3 Tage dauern, damit stationäre Messbedingungen angenähert werden. Die Messwerte werden mit einem Datenlogger aufgenommen und abgespeichert."},
+
+  {cat:"Analyse & Messverfahren",
+   q:"Was ist die physikalische Grundlage der Infrarotthermographie?",
+   o:["Jeder Körper über -273,15 °C sendet elektromagnetische Strahlung aus, deren Intensität mit der Temperatur zusammenhängt","Wärmere Oberflächen reflektieren sichtbares Licht stärker als kältere","Feuchtigkeit absorbiert Infrarotstrahlung und gibt sie verzögert ab","Metallische Oberflächen emittieren mehr Infrarotstrahlung als Putzflächen"],
+   a:0,
+   e:"Das Prinzip der Infrarotthermographie basiert darauf, dass jeder Körper elektromagnetische Strahlung aussendet. Zwischen Oberflächentemperatur und spektraler Strahlung besteht ein physikalischer Zusammenhang, über den die Temperatur ermittelt wird."},
+
+  {cat:"Analyse & Messverfahren",
+   q:"Was ist der Wassereindringprüfer nach Karsten?",
+   o:["Ein Laborgerät für Wasserabsorptionsmessungen an Materialproben","Ein Messgerät zur Abschätzung des Wassereindringsverhalten bei Bestandsfassaden","Ein Gerät zur Ermittlung des Salzgehalts in feuchtem Mauerwerk","Ein Prüfgerät für die Hydrophobierungseigenschaft von Neuputzen"],
+   a:1,
+   e:"Der Wassereindringprüfer nach Karsten ist ein einfaches Feldmessgerät: Eine Glocke wird an der Wand befestigt, das Röhrchen mit Wasser befüllt und regelmäßig kontrolliert. So lässt sich das Wassereindringsverhalten von Bestandsfassaden abschätzen."},
+
+  {cat:"Analyse & Messverfahren",
+   q:"Was ist die WD Prüfplatte nach Franke?",
+   o:["Ein Gerät zur Messung des Wärmedurchgangs durch Sichtmauerwerk","Eine Weiterentwicklung des Karsten-Prüfers zur Prüfung der Hydrophobierbarkeit von Sichtmauerwerk","Eine Norm für die Wasseraufnahme von Natursteinfassaden","Ein Gerät zur Simulation der Schlagregenbeanspruchung im Labor"],
+   a:1,
+   e:"Die WD Prüfplatte nach Franke ist eine Weiterentwicklung des Karsten-Prüfers. Sie dient zur Prüfung der Hydrophobierbarkeit von Sichtmauerwerksfassaden und entspricht ca. 1 Läuferstein im Normalformat."},
+
+  {cat:"Analyse & Messverfahren",
+   q:"Wie funktioniert ein elektrisches Feuchtemessgerät an Bauteilen?",
+   o:["Es misst die Infrarotabsorption bei verschiedenen Wellenlängen","Es bestimmt das Gewicht der Probe vor und nach der Trocknung","Je feuchter das Baumaterial, desto kleiner ist der gemessene elektrische Widerstand zwischen zwei Elektroden","Es analysiert die Kapillarleitfähigkeit mit Radiofrequenzwellen"],
+   a:2,
+   e:"Elektrische Feuchtemessgeräte messen den elektrischen Widerstand über zwei Elektroden. Je feuchter das Material, desto kleiner der Widerstand. Das ermöglicht schnelle Messungen direkt am Bauteil."},
+
+  {cat:"Analyse & Messverfahren",
+   q:"Was ergibt Laserscanning als Ergebnis der Gebäudeerfassung?",
+   o:["Einen vektoriellen Bestandsplan mit Maßangaben","Eine zweidimensionale Schadenskartierung des Gebäudes","Ein Bildarchiv mit hochauflösenden Fassadenfotos","Eine dreidimensionale Punktwolke des Gebäudes"],
+   a:3,
+   e:"Laserscanning ist ein erweitertes Verfahren auf Grundlage der Tachymetrie: Es nimmt eine sehr große Anzahl von Einzelpunkten auf und liefert als Ergebnis eine dreidimensionale Punktwolke."},
+
+  {cat:"Analyse & Messverfahren",
+   q:"Was ist bei der Tachymetrie besonders vorteilhaft?",
+   o:["Sehr schnelle Aufnahme von Millionen Einzelpunkten als Punktwolke","Einfachste und kostengünstigste Methode der Bestandserfassung","Sehr genaue Bestimmung einzelner Punkte im Raum auf elektrooptischer Basis","Messung nicht am Objekt selbst, sondern an Fotos des Objektes"],
+   a:2,
+   e:"Die Tachymetrie ist ein etabliertes Verfahren auf elektrooptischer Basis. Einzelne Punkte im Raum lassen sich damit sehr genau bestimmen. Das Laserscanning erweitert dieses Verfahren zur Massenaufnahme."},
+
+  {cat:"Analyse & Messverfahren",
+   q:"Was ist Photogrammetrie in der Gebäudeerfassung?",
+   o:["Ein elektrooptisches Verfahren zur genauen Bestimmung einzelner Raumpunkte","Die einfachste und verbreitetste Methode für einfache Geometrien","Eine Methode zur dreidimensionalen Punktwolkenerfassung per Laser","Messung an fotografischen Bildern des Objektes, sinnvoll wenn viele Details bestimmt werden müssen"],
+   a:3,
+   e:"Bei der Photogrammetrie wird nicht direkt am Objekt gemessen, sondern an fotografischen Bildern. Das Verfahren ist sinnvoll, wenn viele Details bestimmt werden müssen, ist aber anfällig für äußere Einflüsse wie Ausleuchtung und Aufnahmewinkel."},
+
+  {cat:"Analyse & Messverfahren",
+   q:"Was gilt als Primärdaten bei der Gebäudeerfassung?",
+   o:["Visuelle Erfassung vor Ort mit Fotodokumentation und Handaufmaß","Vektorisierung von digitalisierten Archivplänen","Abgeleitete Werte aus Gebäudetypologien und Baualtersklassen","Energetische Berechnungen auf Basis von Katalogwerten"],
+   a:0,
+   e:"Primärdaten werden durch visuelle Erfassung vor Ort gewonnen: Aufnahme wesentlicher Eigenschaften, Fotodokumentation der Beobachtungen und Bewertungen sowie Handaufmaß."},
+
+  {cat:"Analyse & Messverfahren",
+   q:"Was sind Nachteile von Sekundärdaten (digitalisierte Papierpläne)?",
+   o:["Sie sind für die Praxis zu teuer und zeitaufwändig","Mangelnde Genauigkeit und Unsicherheiten bezüglich der Aktualität","Sie können nicht für energetische Berechnungen verwendet werden","Sie sind nur für Gebäude nach 1950 verfügbar"],
+   a:1,
+   e:"Die Vektorisierung von digitalisierten Papierplänen ist zwar schnell und kostengünstig, hat aber Nachteile: mangelnde Genauigkeit und Unsicherheiten bezüglich der Aktualität der Pläne."},
+
+  {cat:"Analyse & Messverfahren",
+   q:"Was untersucht die Schadensanalyse bei der Gebäudebeurteilung?",
+   o:["Feuchtigkeit an Wänden, Risse im Mauerwerk, Salzausblühungen und Schimmelstellen","Tragwerksqualität und Energieverbrauch laut Heizkostenabrechnungen","Nur Schäden an der Außenfassade und am Dach","Statische Mängel und Setzungsrisse im Fundament"],
+   a:0,
+   e:"Die Schadensanalyse umfasst Sichtprüfungen auf Feuchtigkeit an Wänden in UG und EG, Risse im Mauerwerk, Salzausblühungen und Schimmelstellen – insbesondere an den Außenwänden."},
+
+  {cat:"Analyse & Messverfahren",
+   q:"Was ist das Wasseraufnahmemessgerät nach Stelzmann?",
+   o:["Ein Laborprüfgerät für Materialproben aus dem Bestand","Eine Weiterentwicklung des Karsten-Prüfers für Lochmauerwerk","Ein Gerät zur Messung der aufgesaugten Wassermenge bei Beregnung eines Fassadenausschnitts (30 × 40 cm)","Ein mobiles Gerät zur Bestimmung des Salzgehalts in Fugen"],
+   a:2,
+   e:"Das Wasseraufnahmemessgerät nach Stelzmann beregnet einen Fassadenausschnitt mit einem Rahmen von 30 × 40 cm und erfasst die aufgesaugte Wassermenge. Der Wasseraufnahmekoeffizient wird analog DIN EN ISO 15148 berechnet."},
+
+  // ── KATEGORIE 6: Materialien & Baualtersklassen (15) ─────────────────────
+  {cat:"Materialien & Baualtersklassen",
+   q:"Was charakterisiert Gebäude der Baualtersklasse I (bis 1918)?",
+   o:["Nachkriegsbauten mit minderwertigem Material aus kriegsbeschädigten Gebäuden","Historische Bauten mit starken regionalen Unterschieden, häufig Fachwerkbauten","Massivbauten der Gründerzeit mit Hohlblocksteinen und Betondecken","Industriebauten der Zwischenkriegszeit mit Eisenbetonkonstruktionen"],
+   a:1,
+   e:"Baualtersklasse I umfasst historische Bauten bis 1918, oft Fachwerkbauten mit starken regionalen Unterschieden. Teilweise wird sie nochmals unterteilt in Gebäude bis 1900 und 1900–1918."},
+
+  {cat:"Materialien & Baualtersklassen",
+   q:"Welche Baumaterialien kennzeichnen die Baualtersklasse II (1919–1948)?",
+   o:["Überwiegend Bimshohlblock- und Hochlochziegelsteine mit Betondecken","Einfachste Bauausführung mit häufig minderwertigem Material","Massivbauten aus Ziegel, ab ca. 1938 auch Hohlblocksteine mit Füllungen","Fertigbetonteile und industriell vorgefertigte Wandelemente"],
+   a:2,
+   e:"In der Baualtersklasse II wurden Fachwerkbauten zunehmend durch Massivbauten aus Ziegel ersetzt. Ab ca. 1938 kamen auch Hohlblocksteine mit Füllungen zum Einsatz."},
+
+  {cat:"Materialien & Baualtersklassen",
+   q:"Was charakterisiert die Baualtersklasse III (1949–1957)?",
+   o:["Verbesserte Leichthochlochziegel mit thermischen Eigenschaften","Beginn der Wärmeschutzverordnung mit Pflichtdämmungen","Hauptsächlich Bimshohlblock- und Hochlochziegelsteine mit Betondecken","Einfachste Bauausführung mit oft minderwertigem Material aus kriegsbeschädigten Gebäuden"],
+   a:3,
+   e:"Die Baualtersklasse III (Nachkriegszeit 1949–1957) ist geprägt von einfachster Bauausführung mit häufig minderwertigem Material aus kriegsbeschädigten Gebäuden. Für Wände wurden am häufigsten Hohlblock- und Ziegelsteine verwendet."},
+
+  {cat:"Materialien & Baualtersklassen",
+   q:"Ab welcher Baualtersklasse ist die Dämmung der Gebäudeaußenhülle vorgeschrieben?",
+   o:["Ab Baualtersklasse VI (ab 1979) durch die 1. Wärmeschutzverordnung","Ab Baualtersklasse V (ab 1969) durch das Energieeinspargesetz","Ab Baualtersklasse VII (ab 1984) durch die 2. WSchVO","Ab Baualtersklasse IX (ab 2002) durch die Energieeinsparverordnung"],
+   a:0,
+   e:"Mit der 1. Wärmeschutzverordnung von 1977 wurde die Dämmung der Gebäudeaußenhülle vorgeschrieben. Gebäude der Baualtersklasse VI (ab 1979) wurden erstmals mit verbesserter Wärmedämmung errichtet."},
+
+  {cat:"Materialien & Baualtersklassen",
+   q:"Wie viel Prozent aller Wohngebäude wurden laut GWZ 2011 bis 1948 errichtet?",
+   o:["Ca. 18 %","Ca. 26 %","Ca. 35 %","Ca. 42 %"],
+   a:1,
+   e:"Laut Gebäude- und Wohnungszählung (GWZ) 2011 wurden insgesamt 26 % aller Wohngebäude bis zum Jahr 1948 errichtet. Diese historischen Gebäude stellen einen erheblichen Anteil des Sanierungsbedarfs dar."},
+
+  {cat:"Materialien & Baualtersklassen",
+   q:"Was sind baukonstruktive Merkmale zur Typologisierung historischer Gebäude?",
+   o:["Heizungsart, Kellernutzung und Fensterflächenanteil","Raumhöhe, Dachneigung und Fassadenfarbe","Massivbauweise mit Naturstein, mit Ziegelmauerwerk oder Fachwerkkonstruktion","Wanddicke, Bodenart und Anzahl der Vollgeschosse"],
+   a:2,
+   e:"Zur baukonstruktiven Typologisierung werden folgende Kategorien unterschieden: Massivbauweise mit Naturstein, Massivbauweise mit Ziegelmauerwerk und Fachwerkkonstruktionen mit unterschiedlichen Gefachfüllungen."},
+
+  {cat:"Materialien & Baualtersklassen",
+   q:"Welche Gebäudegrößen werden bei der energetischen Typologisierung unterschieden?",
+   o:["Häuser bis 100 m², 100–200 m² und über 200 m² Wohnfläche","EFH, DHH und Mehrfamilienhäuser ohne weitere Unterscheidung","Ein-/Zweifamilienhäuser, kleine MFH mit 3–6 WE und große MFH ab 7 WE","Nur EFH und MFH als zwei Grundkategorien"],
+   a:2,
+   e:"Bei den energetischen Merkmalen wird nach Gebäudegröße unterschieden: Ein-/Zweifamilienhäuser (EFH/ZFH), kleine Mehrfamilienhäuser (3–6 WE) und große Mehrfamilienhäuser (ab 7 WE)."},
+
+  {cat:"Materialien & Baualtersklassen",
+   q:"Was ist die energetische Bedeutung eines kleinen A/V-Verhältnisses?",
+   o:["Ein kleines A/V-Verhältnis bedeutet mehr Verlustfläche je Volumen","Ein kleines A/V-Verhältnis (kompaktes Gebäude) bedeutet weniger Energieverluste je beheiztem Volumen","Das A/V-Verhältnis hat nur beim Neubau Relevanz, nicht bei Denkmalen","Je größer das A/V-Verhältnis, desto geringer der spezifische Energieverbrauch"],
+   a:1,
+   e:"Ein kleines A/V-Verhältnis steht für ein kompaktes Gebäude mit wenig Hüllfläche pro Volumen. Da die Hüllfläche die Verlustfläche darstellt, haben kompakte Gebäude einen energetischen Vorteil. Freistehendes vs. angebautes Gebäude spielt dabei eine wichtige Rolle."},
+
+  {cat:"Materialien & Baualtersklassen",
+   q:"Welche Fehler können bei unterschiedlichen Baustoffannahmen bei der Energieberechnung entstehen?",
+   o:["Ca. 5 bis 10 % Abweichung vom tatsächlichen Energieverbrauch","Ca. 10 bis 20 % Fehler bei der Heizlastberechnung","Ca. 54 bis 70 % Fehler bei der Berechnung von Einsparpotentialen","Keine signifikanten Fehler, da Typologien sehr präzise sind"],
+   a:2,
+   e:"Eine Studie der Universität Kassel (2001) stellte fest, dass bei unterschiedlichen Baustoffannahmen Fehler von 54 bis ca. 70 % bei der Berechnung von Einsparpotentialen entstehen können. Gebäudetypologien helfen, diese Fehler zu reduzieren."},
+
+  {cat:"Materialien & Baualtersklassen",
+   q:"Was ist der Vorteil von Gebäudetypologien bei der energetischen Beratung?",
+   o:["Sie ersetzen vollständig die Bestandsaufnahme des Gebäudes","Sie garantieren exakte Berechnungen ohne weitere Untersuchungen","Sie helfen, Fehler bei der Datenerfassung zu reduzieren und realistische Einsparpotentiale zu ermitteln","Sie sind ausschließlich für Neubauten nach 2002 geeignet"],
+   a:2,
+   e:"Gebäudetypologien ermöglichen eine bessere Alterszuordnung, gebäudeangepasste Sanierungen und realistische Einsparpotentiale. Sie erhöhen die Genauigkeit der Berechnung und können die Sanierungsrate steigern."},
+
+  {cat:"Materialien & Baualtersklassen",
+   q:"Welche Methoden werden bei der Gebäudebestandsanalyse eingesetzt?",
+   o:["Nur Sichtprüfung und Fotodokumentation ohne bauliche Eingriffe","Ausschließlich Energieverbrauchsanalyse aus Heizkostenabrechnungen","Lediglich Vergleiche mit Gebäuden gleichen Baualters nach Typologien","Sichtprüfung, Kernbohrungen, Abgrabungen, Vergleiche mit regionaltypischen Bauweisen"],
+   a:3,
+   e:"Die Gebäudebestandsanalyse kombiniert verschiedene Methoden: Sichtprüfung, punktuelle Abgrabungen im Fundamentbereich, Kernbohrungen bei massiven Bauteilen, Öffnen von Bekleidungen sowie Vergleiche mit Gebäuden gleichen Baualters."},
+
+  {cat:"Materialien & Baualtersklassen",
+   q:"Was charakterisiert Baudenkmale aus der Zeit vor 1600 laut Untersuchungen der Denkmaltopographie?",
+   o:["Sie sind besonders häufig in Esslingen vertreten","Sie wurden hauptsächlich in Heidelberg errichtet","Sie sind gleichmäßig über alle untersuchten Städte verteilt","Sie sind kaum erhalten und bilden die kleinste Gruppe der Baudenkmale"],
+   a:0,
+   e:"Die Untersuchung der Denkmaltopographien von Esslingen, Heidelberg und Ludwigsburg zeigt: Gebäude vor 1600 sind besonders häufig in Esslingen vertreten (179 von insgesamt 195 Denkmalen dieser Epoche)."},
+
+  {cat:"Materialien & Baualtersklassen",
+   q:"Was ist die Grundqualifikation für die Eintragung als Energieberater Denkmal?",
+   o:["Ein abgeschlossenes Architekturstudium mit Vertiefung Denkmalpflege","Eine Ausstellungsberechtigung für Energieausweise nach §88 GEG","Eine langjährige Berufserfahrung mit nachgewiesenen Denkmalprojekten","Ein WTA-Kurs über Energieberatung für Baudenkmale"],
+   a:1,
+   e:"Die Grundqualifikation gemäß §22.1 der WTA-Richtlinie ist die Ausstellungsberechtigung für Energieausweise nach §88 GEG. Die nach §113 GEG berechtigten Personen sind davon ausgeschlossen."},
+
+  {cat:"Materialien & Baualtersklassen",
+   q:"Was kostet die Ersteintragung als Energieberater Denkmal beim WTA?",
+   o:["80 € für WG zzgl. MwSt","100 € für WG zzgl. MwSt","120 € für WG + 20 € für NWG zzgl. MwSt","150 € für WG zzgl. MwSt"],
+   a:2,
+   e:"Die Ersteintragung kostet 120 € für Wohngebäude (WG) und optional 20 € für Nichtwohngebäude (NWG) zzgl. MwSt. Der Jahresbeitrag beträgt 130 € für WG + 20 € für NWG."},
+
+  {cat:"Materialien & Baualtersklassen",
+   q:"Wie lange gilt die Ersteintragung als Energieberater Denkmal und wie erfolgt die Verlängerung?",
+   o:["Gilt 1 Jahr, wird jährlich verlängert","Gilt 2 Jahre, wird alle 2 Jahre verlängert","Gilt 5 Jahre, wird alle 5 Jahre verlängert","Gilt 3 Jahre, wird jeweils für weitere 3 Jahre verlängert"],
+   a:3,
+   e:"Die Ersteintragung gilt 3 Jahre. Die Verlängerung erfolgt jeweils für weitere 3 Jahre. Damit soll sichergestellt werden, dass eingetragene Berater regelmäßig ihre Qualifikation nachweisen."}
+];
+
+// ── Engine ─────────────────────────────────────────────────────────────────
+let order = [], cur = 0, score = 0;
+let catScores = {}, catTotals = {};
+let answered = false;
+
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function init(){
+  order = shuffle([...Array(QUESTIONS.length).keys()]);
+  cur = 0; score = 0;
+  catScores = {}; catTotals = {};
+  QUESTIONS.forEach(q=>{
+    if(!catTotals[q.cat]) catTotals[q.cat]=0;
+    catTotals[q.cat]++;
+  });
+  document.getElementById('quiz-container').innerHTML = `
+    <div class="header">
+      <h1>Energieberatung für Baudenkmäler – Tag 3</h1>
+      <div class="sub">Referentin: Dr.-Ing. Diana Wiedemann · Campus-EW GmbH</div>
+      <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar" style="width:1%"></div></div>
+      <div class="progress-label" id="progress-label">Frage 1 von ${QUESTIONS.length}</div>
+    </div>
+    <div class="body" id="quiz-body">
+      <div class="category-tag" id="cat-tag"></div>
+      <div class="question" id="question-text"></div>
+      <div class="multi-hint" id="multi-hint">☑ Mehrfachauswahl – wählen Sie alle zutreffenden Antworten und bestätigen Sie dann.</div>
+      <div class="options" id="options"></div>
+      <button class="confirm-btn" id="confirm-btn" onclick="confirmMulti()" disabled>Auswahl bestätigen</button>
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Weiter →</button>
+    </div>
+    <div class="footer">Tag 3 · Referentin: Dr.-Ing. Diana Wiedemann · Campus-EW GmbH, Aachen</div>`;
+  showQuestion();
+}
+
+function isMulti(q){ return Array.isArray(q.a); }
+
+function showQuestion(){
+  answered = false;
+  const idx = order[cur];
+  const q = QUESTIONS[idx];
+  const letters = ['A','B','C','D'];
+  const pct = Math.round((cur/QUESTIONS.length)*100);
+
+  document.getElementById('progress-bar').style.width = Math.max(1,pct)+'%';
+  document.getElementById('progress-label').textContent = `Frage ${cur+1} von ${QUESTIONS.length}`;
+  document.getElementById('cat-tag').textContent = q.cat;
+  document.getElementById('question-text').textContent = q.q;
+  document.getElementById('multi-hint').style.display = isMulti(q) ? 'block' : 'none';
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('next-btn').style.display = 'none';
+
+  const multi = isMulti(q);
+  document.getElementById('confirm-btn').style.display = multi ? 'block' : 'none';
+  document.getElementById('confirm-btn').disabled = true;
+
+  const optDiv = document.getElementById('options');
+  optDiv.innerHTML = '';
+  q.o.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span>${opt}`;
+    btn.onclick = () => selectOption(btn, i);
+    optDiv.appendChild(btn);
+  });
+}
+
+function selectOption(btn, idx){
+  if(answered) return;
+  const q = QUESTIONS[order[cur]];
+  const multi = isMulti(q);
+  const allBtns = document.querySelectorAll('.option');
+
+  if(!multi){
+    allBtns.forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+    evaluateSingle(idx);
+  } else {
+    btn.classList.toggle('selected');
+    const selCount = document.querySelectorAll('.option.selected').length;
+    document.getElementById('confirm-btn').disabled = selCount === 0;
+  }
+}
+
+function evaluateSingle(chosen){
+  answered = true;
+  const q = QUESTIONS[order[cur]];
+  const allBtns = document.querySelectorAll('.option');
+  allBtns.forEach(b => b.disabled = true);
+
+  const correct = chosen === q.a;
+  allBtns[q.a].classList.add('correct');
+  if(!correct) allBtns[chosen].classList.add('wrong');
+
+  if(correct){ score++; trackCat(q.cat, true); } else { trackCat(q.cat, false); }
+  showFeedback(correct, q.e);
+  document.getElementById('next-btn').style.display = 'block';
+}
+
+function confirmMulti(){
+  answered = true;
+  const q = QUESTIONS[order[cur]];
+  const allBtns = document.querySelectorAll('.option');
+  const correct = new Set(q.a);
+  const selected = new Set();
+  allBtns.forEach((b,i) => { if(b.classList.contains('selected')) selected.add(i); });
+  allBtns.forEach(b => b.disabled = true);
+  document.getElementById('confirm-btn').disabled = true;
+
+  let allOk = true;
+  allBtns.forEach((b,i) => {
+    if(correct.has(i)){ b.classList.remove('selected'); b.classList.add('correct'); }
+    else if(selected.has(i)){ b.classList.remove('selected'); b.classList.add('wrong'); allOk=false; }
+  });
+  correct.forEach(i => { if(!selected.has(i)) allOk = false; });
+
+  if(allOk){ score++; trackCat(q.cat, true); } else { trackCat(q.cat, false); }
+  showFeedback(allOk, q.e);
+  document.getElementById('next-btn').style.display = 'block';
+}
+
+function trackCat(cat, ok){
+  if(!catScores[cat]) catScores[cat] = 0;
+  if(ok) catScores[cat]++;
+}
+
+function showFeedback(ok, explanation){
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback ' + (ok ? 'correct' : 'wrong');
+  fb.innerHTML = `<div class="feedback-icon">${ok ? '✓ Richtig!' : '✗ Leider falsch.'}</div>${explanation}`;
+  fb.style.display = 'block';
+}
+
+function nextQuestion(){
+  cur++;
+  if(cur >= QUESTIONS.length){ showResults(); return; }
+  showQuestion();
+}
+
+function showResults(){
+  const pct = Math.round((score/QUESTIONS.length)*100);
+  let catHTML = '';
+  Object.keys(catTotals).forEach(cat => {
+    const s = catScores[cat] || 0;
+    const t = catTotals[cat];
+    const p = Math.round((s/t)*100);
+    catHTML += `<div class="cat-row">
+      <div class="cat-name">${cat}</div>
+      <div class="cat-bar-bg"><div class="cat-bar" style="width:${p}%"></div></div>
+      <div class="cat-pct">${s}/${t} (${p} %)</div>
+    </div>`;
+  });
+  document.getElementById('quiz-container').innerHTML = `
+    <div class="results">
+      <h2>Ergebnis</h2>
+      <div class="score-big">${pct} %</div>
+      <div class="score-label">${score} von ${QUESTIONS.length} Fragen richtig beantwortet</div>
+      <div class="cat-results">${catHTML}</div>
+      <button class="restart-btn" onclick="init()">Quiz wiederholen</button>
+    </div>
+    <div class="footer">Tag 3 · Referentin: Dr.-Ing. Diana Wiedemann · Campus-EW GmbH, Aachen</div>`;
+}
+
+init();
+</script>
+</body>
+</html>
